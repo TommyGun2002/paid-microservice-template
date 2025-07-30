@@ -4,7 +4,11 @@ from typing import Dict, Any, Optional
 
 class SupabaseService:
     def __init__(self):
-        if settings.SUPABASE_URL and settings.SUPABASE_KEY:
+        # Only initialize if we have valid Supabase credentials
+        if (settings.SUPABASE_URL 
+            and settings.SUPABASE_KEY 
+            and settings.SUPABASE_URL != "your_supabase_url_here"
+            and settings.SUPABASE_KEY != "your_supabase_anon_key_here"):
             self.client: Client = create_client(
                 settings.SUPABASE_URL, 
                 settings.SUPABASE_KEY
@@ -12,7 +16,7 @@ class SupabaseService:
             self.admin_client: Client = create_client(
                 settings.SUPABASE_URL, 
                 settings.SUPABASE_SERVICE_KEY
-            ) if settings.SUPABASE_SERVICE_KEY else None
+            ) if settings.SUPABASE_SERVICE_KEY and settings.SUPABASE_SERVICE_KEY != "your_supabase_service_key_here" else None
         else:
             self.client = None
             self.admin_client = None

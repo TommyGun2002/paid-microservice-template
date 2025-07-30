@@ -48,3 +48,17 @@ async def get_premium_user(
         )
     
     return current_user
+
+async def get_admin_user(
+    current_user: Dict[str, Any] = Depends(get_current_active_user)
+) -> Dict[str, Any]:
+    """Require admin privileges"""
+    profile = current_user.get("profile", {})
+    
+    if not profile.get("is_admin", False):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin privileges required"
+        )
+    
+    return current_user
