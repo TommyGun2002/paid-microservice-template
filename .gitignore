@@ -1,7 +1,7 @@
 # Environment variables
 .env
 
-# Python
+# Python cache files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -22,6 +22,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # Virtual environments
 venv/
@@ -47,3 +48,8 @@ Thumbs.db
 
 # Redis dump
 dump.rdb
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
