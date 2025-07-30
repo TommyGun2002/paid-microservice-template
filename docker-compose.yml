@@ -1,11 +1,45 @@
 version: '3.8'
 
 services:
-  api:
+  app:
     build: .
     ports:
       - "8000:8000"
-    volumes:
-      - ./app:/app/app
     environment:
-      - PYTHONPATH=/app
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  # Optional: Redis Commander for Redis management UI
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    profiles:
+      - tools  # Only start with: docker-compose --profile tools up
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  default:
+    name: fastapi-monetizable-network
